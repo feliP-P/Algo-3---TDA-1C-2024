@@ -1,3 +1,4 @@
+#https://vjudge.net/problem/SPOJ-GERGOVIA
 def trading_cost(n,list):
     costo = 0
     for i in range(n-1):
