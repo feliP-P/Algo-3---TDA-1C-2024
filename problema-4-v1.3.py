@@ -1,3 +1,4 @@
+#https://vjudge.net/problem/CodeForces-559B
 def ordenar(a):
     l = len(a)
     if l%2 == 1: #este ej me rompio un poco la cabeza porque estaba pensando que len(a) era 2**n, osea el caso base era de 2 y se podia hacer de forma iterativa, pero puede ser de "longitud = cualquier numero primo*2", y el caso base es un numero primo != 2 :p
