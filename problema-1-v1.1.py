@@ -1,3 +1,4 @@
+#https://vjudge.net/problem/UVA-11804
 def att(n):
     return n[1]
 
