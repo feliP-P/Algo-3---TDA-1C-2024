@@ -1,4 +1,5 @@
 #amigo quede 1 en el leaderboard de python :O
+#https://vjudge.net/problem/CodeForces-1215C
 def monocarp1(n,s,t):
     a_index = []
     b_index =[]
