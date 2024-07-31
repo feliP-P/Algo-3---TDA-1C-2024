@@ -29,64 +29,36 @@ class Grafo:
                     cola.append(vecino)
         return False
     
-    # def edmonds_karp(self, inicio, final):
-    #     max_flow = 0
-    #     parent = {}
-        
-    #     while self.bfs(inicio, final, parent):
-    #         path_flow = float('Inf')
-    #         s = final
-            
-    #         while s != inicio:
-    #             path_flow = min(path_flow, self.grafo[parent[s]][s])
-    #             s = parent[s]
-            
-    #         max_flow += path_flow
-    #         v = final
-            
-    #         while v != inicio:
-    #             u = parent[v]
-    #             self.grafo[u][v] -= path_flow
-    #             self.grafo[v][u] += path_flow
-    #             v = parent[v]
-        
-    #     return max_flow
-
     def edmonds_karp(self, inicio, final):
-        max_flow = 0
-        parent = {}
-    
-        while self.bfs(inicio, final, parent):
-            path_flow = float('Inf')
-            s = final
-            path = []
-        
-            while s != inicio:
-                path_flow = min(path_flow, self.grafo[parent[s]][s])
-                path.append(s)
-                s = parent[s]
-            path.append(inicio)
-            path.reverse()
-        
-            print(f"Path found: {path}, flow: {path_flow}")  # Debug output
-        
-            max_flow += path_flow
-            v = final
-        
-            while v != inicio:
-                u = parent[v]
-                self.grafo[u][v] -= path_flow
-                self.grafo[v][u] += path_flow
-                v = parent[v]
-    
-        return max_flow
+            max_flow = 0
+            parent = {}
+            
+            while self.bfs(inicio, final, parent):
+                path_flow = float('Inf')
+                s = final
+                
+                while s != inicio:
+                    path_flow = min(path_flow, self.grafo[parent[s]][s])
+                    s = parent[s]
+                
+                max_flow += path_flow
+                v = final
+                
+                while v != inicio:
+                    u = parent[v]
+                    self.grafo[u][v] -= path_flow
+                    self.grafo[v][u] += path_flow
+                    v = parent[v]
+            
+            return max_flow
+
     
 def main():
     try:
         x,y,p = map(int, input().split())
-        results = []
+        # results = []
         b = 'b'
-        while x != 0:
+        while True:
 
             n = x*y
             # cada simbolo tiene una capacidad de entrada y otra de salida
@@ -123,10 +95,10 @@ def main():
                 for j in range(1,y-1):
                     #si el punto del mapa es un hielo, el flujo sale desde su nodo fantasma
                     if mapa[i][j]== '.':
-                        g.agregar_arista(((i,j),b),(i,j-1),1)
-                        g.agregar_arista(((i,j),b),(i,j+1),1)
-                        g.agregar_arista(((i,j),b),(i+1,j),1)
-                        g.agregar_arista(((i,j),b),(i-1,j),1)
+                        g.agregar_arista(((i,j),b),(i,j-1),min(1, symbols[mapa[i][j-1]][0]))
+                        g.agregar_arista(((i,j),b),(i,j+1),min(1, symbols[mapa[i][j+1]][0]))
+                        g.agregar_arista(((i,j),b),(i+1,j),min(1, symbols[mapa[i+1][j]][0]))
+                        g.agregar_arista(((i,j),b),(i-1,j),min(1, symbols[mapa[i-1][j]][0]))
                     else:
                         g.agregar_arista((i,j),(i,j+1),min(symbols[mapa[i][j]][1], symbols[mapa[i][j+1]][0]))
                         g.agregar_arista((i,j),(i,j-1),min(symbols[mapa[i][j]][1], symbols[mapa[i][j-1]][0]))
@@ -137,16 +109,16 @@ def main():
             for i in range(1,x-1):
                 #si el punto del mapa es un hielo, el flujo sale desde su nodo fantasma
                 if mapa[i][0]== '.':
-                    g.agregar_arista(((i,0),b),(i+1,0),1)
-                    g.agregar_arista(((i,0),b),(i-1,0),1)
+                    g.agregar_arista(((i,0),b),(i+1,0), min(1, symbols[mapa[i+1][0]][0]))
+                    g.agregar_arista(((i,0),b),(i-1,0), min(1, symbols[mapa[i-1][0]][0]))
                 else:
                     g.agregar_arista((i,0),(i+1,0),min(symbols[mapa[i][0]][1], symbols[mapa[i+1][0]][0]))
                     g.agregar_arista((i,0),(i-1,0),min(symbols[mapa[i][0]][1], symbols[mapa[i-1][0]][0]))
 
                 #si el punto del mapa es un hielo, el flujo sale desde su nodo fantasma
                 if mapa[i][y-1]== '.':
-                    g.agregar_arista(((i,y-1),b),(i+1,y-1),1)
-                    g.agregar_arista(((i,y-1),b),(i-1,y-1),1)
+                    g.agregar_arista(((i,y-1),b),(i+1,y-1), min(1, symbols[mapa[i+1][y-1]][0]))
+                    g.agregar_arista(((i,y-1),b),(i-1,y-1), min(1, symbols[mapa[i-1][y-1]][0]))
                 else:
                     g.agregar_arista((i,y-1),(i+1,y-1),min(symbols[mapa[i][y-1]][1], symbols[mapa[i+1][y-1]][0]))
                     g.agregar_arista((i,y-1),(i-1,y-1),min(symbols[mapa[i][y-1]][1], symbols[mapa[i-1][y-1]][0]))
@@ -154,37 +126,39 @@ def main():
             #luego los limites superiores del mapa
             for j in range(1,y-1):
                 if mapa[0][j]== '.':
-                    g.agregar_arista(((0,j),b),(0,j+1),1)
-                    g.agregar_arista(((0,j),b),(0,j-1),1)
+                    g.agregar_arista(((0,j),b),(0,j+1),min(1, symbols[mapa[0][j+1]][0]))
+                    g.agregar_arista(((0,j),b),(0,j-1),min(1, symbols[mapa[0][j-1]][0]))
                 else:
                     g.agregar_arista((0,j),(0,j+1),min(symbols[mapa[0][j]][1], symbols[mapa[0][j+1]][0]))
                     g.agregar_arista((0,j),(0,j-1),min(symbols[mapa[0][j]][1], symbols[mapa[0][j-1]][0]))
                 if mapa[x-1][j]== '.':
-                    g.agregar_arista(((x-1,j),b),(x-1,j+1),1)
-                    g.agregar_arista(((x-1,j),b),(x-1,j-1),1)
+                    g.agregar_arista(((x-1,j),b),(x-1,j+1),min(1, symbols[mapa[x-1][j+1]][0]))
+                    g.agregar_arista(((x-1,j),b),(x-1,j-1),min(1, symbols[mapa[x-1][j-1]][0]))
                 else:
                     g.agregar_arista((x-1,j),(x-1,j+1),min(symbols[mapa[x-1][j]][1], symbols[mapa[x-1][j+1]][0]))
                     g.agregar_arista((x-1,j),(x-1,j-1),min(symbols[mapa[x-1][j]][1], symbols[mapa[x-1][j-1]][0]))
             
+
+
             if x >1:
                 for j in range(y):
                     if mapa[0][j]== '.':
-                        g.agregar_arista(((0,j),b),(1,j),1)
+                        g.agregar_arista(((0,j),b),(1,j),min(1, symbols[mapa[1][j]][0]) )
                     else:
                         g.agregar_arista((0,j),(1,j),min(symbols[mapa[0][j]][1], symbols[mapa[1][j]][0]) )
                     if mapa[x-1][j]== '.':
-                        g.agregar_arista(((x-1,j),b),(x-2,j),1)
+                        g.agregar_arista(((x-1,j),b),(x-2,j),min(1, symbols[mapa[x-2][j]][0])  )
                     else:
                         g.agregar_arista((x-1,j),(x-2,j),min(symbols[mapa[x-1][j]][1], symbols[mapa[x-2][j]][0]) )
             
             if y >1:
                 for i in range(x):
                     if mapa[i][0]== '.':
-                        g.agregar_arista(((i,0),b),(i,1),1)
+                        g.agregar_arista(((i,0),b),(i,1),min(1, symbols[mapa[i][1]][0])  )
                     else:
                         g.agregar_arista((i,0),(i,1),min(symbols[mapa[i][0]][1], symbols[mapa[i][1]][0]) )
                     if mapa[i][y-1]== '.':
-                        g.agregar_arista(((i,y-1),b),(i,1),1)
+                        g.agregar_arista(((i,y-1),b),(i,y-2),min(1, symbols[mapa[i][y-2]][0])  )
                     else:
                         g.agregar_arista((i,y-1),(i,y-2),min(symbols[mapa[i][y-1]][1], symbols[mapa[i][y-2]][0]) )
 
@@ -192,14 +166,14 @@ def main():
             
             print(max_flow)
 
-            results.append(max_flow)
+            # results.append(max_flow)
             b = input()
             x,y,p = map(int, input().split())
 
     except EOFError:
         pass
-    for result in results:
-         print(result)
+    # for result in results:
+    #      print(result)
 
 if __name__ == "__main__":
     main()
